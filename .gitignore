@@ -2,3 +2,6 @@
 .env
 node_modules/
 *.log
+
+# LMS submission folder (uploaded separately, not part of the portfolio repo)
+Oyediran_Taiwo_301921478/

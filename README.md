@@ -1,5 +1,3 @@
-# MIT-8103-Advanced-Database-Systems-portfolio-CareBridge-Clinics-case-study
-
 # MIT 8103 Advanced Database Systems Portfolio – CareBridge Clinics
 
 ## Selected Case Study
