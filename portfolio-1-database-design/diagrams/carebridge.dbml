@@ -1,0 +1,268 @@
+Project carebridge_clinics {
+  database_type: 'PostgreSQL'
+  Note: 'CareBridge Clinics: multi-branch outpatient system (Ikeja, Lekki, Yaba). Synthetic data only.'
+}
+
+// ---------- Enums (become CHECK constraints / PostgreSQL ENUM types) ----------
+
+Enum staff_role {
+  doctor
+  receptionist
+  pharmacist
+  lab_scientist
+  billing_officer
+  admin
+}
+
+Enum appointment_status {
+  scheduled
+  completed
+  cancelled
+  no_show
+}
+
+Enum prescription_status {
+  issued
+  partially_dispensed
+  dispensed
+  cancelled
+}
+
+Enum lab_order_status {
+  ordered
+  sample_collected
+  completed
+  cancelled
+}
+
+Enum bill_status {
+  unpaid
+  part_paid
+  paid
+  void
+}
+
+Enum bill_item_type {
+  consultation
+  lab_test
+  medication
+  other
+}
+
+Enum payment_method {
+  cash
+  card
+  transfer
+  hmo
+}
+
+// ---------- Organisation ----------
+
+Table branches {
+  branch_id int [pk, increment]
+  name varchar(100) [not null, unique]
+  city varchar(50) [not null]
+  address text
+}
+
+Table departments {
+  department_id int [pk, increment]
+  name varchar(100) [not null, unique]
+  Note: 'Global list (e.g. Cardiology). Which branches offer it is in branch_departments.'
+}
+
+Table branch_departments {
+  branch_id int [pk, ref: > branches.branch_id]
+  department_id int [pk, ref: > departments.department_id]
+}
+
+// Supertype for everyone who uses the system
+Table staff {
+  staff_id int [pk, increment]
+  branch_id int [not null, ref: > branches.branch_id, note: 'Primary (home) branch']
+  full_name varchar(150) [not null]
+  role staff_role [not null]
+  email varchar(150) [unique]
+  phone varchar(20)
+  is_active boolean [not null, default: true]
+}
+
+// Subtype of staff (1:1): doctor-specific attributes
+Table doctors {
+  doctor_id int [pk, ref: - staff.staff_id, note: 'Same value as staff_id']
+  department_id int [not null, ref: > departments.department_id]
+  specialisation varchar(100)
+  licence_no varchar(30) [unique, not null]
+}
+
+// ---------- Patients and appointments ----------
+
+Table patients {
+  patient_id int [pk, increment]
+  mrn varchar(20) [unique, not null, note: 'Medical record number: one per person across all branches']
+  first_name varchar(80) [not null]
+  last_name varchar(80) [not null]
+  dob date [not null, note: 'CHECK (dob <= CURRENT_DATE)']
+  gender varchar(10) [note: "CHECK (gender IN ('male','female','other'))"]
+  phone varchar(20)
+  email varchar(150)
+  blood_group varchar(3) [note: "CHECK (blood_group IN ('A+','A-','B+','B-','AB+','AB-','O+','O-'))"]
+  home_branch_id int [not null, ref: > branches.branch_id]
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table appointments {
+  appointment_id int [pk, increment]
+  patient_id int [not null, ref: > patients.patient_id]
+  doctor_id int [not null, ref: > doctors.doctor_id]
+  branch_id int [not null, ref: > branches.branch_id, note: 'Doctors rotate across branches, so the branch is a fact of the appointment, not of the doctor. Also the shard key in Portfolio 5.']
+  booked_by int [ref: > staff.staff_id]
+  start_time timestamptz [not null]
+  end_time timestamptz [not null, note: 'CHECK (end_time > start_time)']
+  status appointment_status [not null, default: 'scheduled']
+  reason text
+  created_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (doctor_id, start_time)
+    (patient_id, start_time)
+  }
+  Note: 'No overlapping appointments per doctor: EXCLUDE USING gist (doctor_id WITH =, tstzrange(start_time, end_time) WITH &&) WHERE (status <> cancelled)'
+}
+
+// ---------- Clinical records ----------
+
+Table consultations {
+  consultation_id int [pk, increment]
+  appointment_id int [unique, not null, ref: - appointments.appointment_id]
+  notes text
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table diagnosis_codes {
+  icd10_code varchar(10) [pk]
+  description text [not null]
+}
+
+Table patient_diagnoses {
+  consultation_id int [pk, ref: > consultations.consultation_id]
+  icd10_code varchar(10) [pk, ref: > diagnosis_codes.icd10_code]
+  is_primary boolean [not null, default: false]
+  notes text
+  Note: 'Composite PK stops the same code being recorded twice in one consultation. Diagnosis time = consultation time.'
+}
+
+// ---------- Pharmacy ----------
+
+Table medications {
+  medication_id int [pk, increment]
+  name varchar(100) [not null]
+  form varchar(30) [not null]
+  strength varchar(30) [not null]
+  unit_price decimal(10,2) [not null, note: 'CHECK (unit_price >= 0)']
+
+  indexes {
+    (name, form, strength) [unique]
+  }
+}
+
+Table pharmacy_stock {
+  branch_id int [pk, ref: > branches.branch_id]
+  medication_id int [pk, ref: > medications.medication_id]
+  quantity int [not null, default: 0, note: 'CHECK (quantity >= 0): stock can never go negative']
+  reorder_level int [not null, default: 0, note: 'CHECK (reorder_level >= 0)']
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+Table prescriptions {
+  prescription_id int [pk, increment]
+  consultation_id int [not null, ref: > consultations.consultation_id]
+  issued_at timestamptz [not null, default: `now()`]
+  status prescription_status [not null, default: 'issued']
+}
+
+Table prescription_items {
+  prescription_id int [pk, ref: > prescriptions.prescription_id]
+  medication_id int [pk, ref: > medications.medication_id]
+  dosage varchar(50)
+  frequency varchar(50)
+  duration_days int [note: 'CHECK (duration_days > 0)']
+  quantity int [not null, note: 'CHECK (quantity > 0)']
+  instructions text
+}
+
+Table dispensations {
+  dispensation_id int [pk, increment]
+  prescription_id int [not null]
+  medication_id int [not null]
+  branch_id int [not null, ref: > branches.branch_id, note: 'Branch whose stock is reduced']
+  quantity int [not null, note: 'CHECK (quantity > 0)']
+  dispensed_by int [not null, ref: > staff.staff_id]
+  dispensed_at timestamptz [not null, default: `now()`]
+  Note: 'Inserting a row and decrementing pharmacy_stock happen in ONE transaction (Portfolio 3).'
+}
+
+Ref: dispensations.(prescription_id, medication_id) > prescription_items.(prescription_id, medication_id)
+
+// ---------- Laboratory ----------
+
+Table lab_tests {
+  test_id int [pk, increment]
+  name varchar(100) [not null, unique]
+  category varchar(50)
+  unit varchar(20)
+  reference_range varchar(50)
+  price decimal(10,2) [not null, note: 'CHECK (price >= 0)']
+}
+
+Table lab_orders {
+  lab_order_id int [pk, increment]
+  consultation_id int [not null, ref: > consultations.consultation_id]
+  test_id int [not null, ref: > lab_tests.test_id]
+  status lab_order_status [not null, default: 'ordered']
+  ordered_at timestamptz [not null, default: `now()`]
+}
+
+Table lab_results {
+  result_id int [pk, increment]
+  lab_order_id int [unique, not null, ref: - lab_orders.lab_order_id]
+  value varchar(50)
+  is_abnormal boolean
+  summary text
+  performed_by int [not null, ref: > staff.staff_id]
+  resulted_at timestamptz [not null, default: `now()`]
+}
+
+// ---------- Billing ----------
+
+Table bills {
+  bill_id int [pk, increment]
+  patient_id int [not null, ref: > patients.patient_id]
+  branch_id int [not null, ref: > branches.branch_id]
+  consultation_id int [ref: > consultations.consultation_id, note: 'NULL for walk-in pharmacy sales']
+  status bill_status [not null, default: 'unpaid']
+  created_by int [ref: > staff.staff_id]
+  created_at timestamptz [not null, default: `now()`]
+  Note: 'Total = SUM(bill_items.quantity * unit_price), computed in a view, not stored. status is a deliberate denormalisation kept in sync by the payment transaction.'
+}
+
+Table bill_items {
+  bill_item_id int [pk, increment]
+  bill_id int [not null, ref: > bills.bill_id]
+  item_type bill_item_type [not null]
+  lab_order_id int [ref: > lab_orders.lab_order_id]
+  dispensation_id int [ref: > dispensations.dispensation_id]
+  description varchar(150) [not null]
+  quantity int [not null, default: 1, note: 'CHECK (quantity > 0)']
+  unit_price decimal(10,2) [not null, note: 'Price at time of billing (historical, not a duplicate of the catalogue price). CHECK (unit_price >= 0)']
+}
+
+Table payments {
+  payment_id int [pk, increment]
+  bill_id int [not null, ref: > bills.bill_id]
+  amount decimal(12,2) [not null, note: 'CHECK (amount > 0)']
+  method payment_method [not null]
+  reference varchar(50)
+  received_by int [ref: > staff.staff_id]
+  paid_at timestamptz [not null, default: `now()`]
+}
