@@ -203,6 +203,7 @@ Table dispensations {
 }
 
 Ref: dispensations.(prescription_id, medication_id) > prescription_items.(prescription_id, medication_id)
+Ref: dispensations.(branch_id, medication_id) > pharmacy_stock.(branch_id, medication_id) // branch must stock the drug
 
 // ---------- Laboratory ----------
 
