@@ -5,3 +5,6 @@ node_modules/
 
 # LMS submission folder (uploaded separately, not part of the portfolio repo)
 Oyediran_Taiwo_301921478/
+
+# Claude reference drafts (not part of the submission)
+_drafts/
