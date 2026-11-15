@@ -1,5 +1,5 @@
 -- CareBridge Portfolio 2: workload queries
--- psql -d carebridge -f 01_queries.sql
+-- psql -d carebridge -f Oyediran_Taiwo_301921478_P2_01_queries.sql
 
 SET search_path TO carebridge;
 \timing on

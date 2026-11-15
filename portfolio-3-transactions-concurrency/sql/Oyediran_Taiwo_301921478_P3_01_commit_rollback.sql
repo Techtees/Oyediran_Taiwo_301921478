@@ -1,6 +1,6 @@
 -- CareBridge Portfolio 3: COMMIT, ROLLBACK and SAVEPOINT in one session
--- psql -d carebridge -f 00_setup_demo_data.sql
--- psql -d carebridge -f 01_commit_rollback.sql
+-- psql -d carebridge -f Oyediran_Taiwo_301921478_P3_00_setup_demo_data.sql
+-- psql -d carebridge -f Oyediran_Taiwo_301921478_P3_01_commit_rollback.sql
 
 SET search_path TO carebridge;
 

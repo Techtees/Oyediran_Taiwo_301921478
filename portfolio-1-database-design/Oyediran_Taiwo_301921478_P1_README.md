@@ -1,6 +1,6 @@
 # Portfolio 1: Database Design and Modelling
 
-CareBridge Clinics is a simulated private outpatient provider with three branches in Lagos (Ikeja, Lekki and Yaba). A patient can register at one branch and be seen at any other, so every branch shares one database for patients, appointments, consultations, prescriptions, lab work and billing. This portfolio covers the design of that database: the ER model, the relational schema in PostgreSQL with its keys and constraints, normalisation, and synthetic test data that later portfolios build on. The full case study is in the [root README](../README.md).
+CareBridge Clinics is a simulated private outpatient provider with three branches in Lagos (Ikeja, Lekki and Yaba). A patient can register at one branch and be seen at any other, so every branch shares one database for patients, appointments, consultations, prescriptions, lab work and billing. This portfolio covers the design of that database: the ER model, the relational schema in PostgreSQL with its keys and constraints, normalisation, and synthetic test data that later portfolios build on. The full case study is in the [root README](../Oyediran_Taiwo_301921478_README.md).
 
 **DBMS:** PostgreSQL 16
 
@@ -8,16 +8,16 @@ CareBridge Clinics is a simulated private outpatient provider with three branche
 
 | File | Purpose |
 |---|---|
-| [diagrams/carebridge.dbml](diagrams/carebridge.dbml) | ER model source (dbdiagram.io) |
-| [diagrams/carebridge-erd.png](diagrams/carebridge-erd.png) | ER diagram image |
-| [sql/01_schema.sql](sql/01_schema.sql) | Tables, keys, constraints, indexes, view |
-| [sql/02_seed_data.sql](sql/02_seed_data.sql) | Synthetic test data |
-| [sql/03_constraint_tests.sql](sql/03_constraint_tests.sql) | 25 constraint tests |
+| [diagrams/Oyediran_Taiwo_301921478_P1_carebridge.dbml](diagrams/Oyediran_Taiwo_301921478_P1_carebridge.dbml) | ER model source (dbdiagram.io) |
+| [diagrams/Oyediran_Taiwo_301921478_P1_carebridge-erd.png](diagrams/Oyediran_Taiwo_301921478_P1_carebridge-erd.png) | ER diagram image |
+| [sql/Oyediran_Taiwo_301921478_P1_01_schema.sql](sql/Oyediran_Taiwo_301921478_P1_01_schema.sql) | Tables, keys, constraints, indexes, view |
+| [sql/Oyediran_Taiwo_301921478_P1_02_seed_data.sql](sql/Oyediran_Taiwo_301921478_P1_02_seed_data.sql) | Synthetic test data |
+| [sql/Oyediran_Taiwo_301921478_P1_03_constraint_tests.sql](sql/Oyediran_Taiwo_301921478_P1_03_constraint_tests.sql) | 25 constraint tests |
 | [screenshots/](screenshots/) | Output of each script |
 
 ## 1. ER Diagram
 
-![CareBridge ER diagram](diagrams/carebridge-erd.png)
+![CareBridge ER diagram](diagrams/Oyediran_Taiwo_301921478_P1_carebridge-erd.png)
 
 I grouped the 21 tables into five areas so the diagram follows how a patient moves through a clinic:
 
@@ -107,29 +107,29 @@ The seed script creates 3 branches, 44 staff (20 doctors), 5,000 patients and ab
 ```bash
 createdb carebridge
 cd portfolio-1-database-design/sql
-psql -d carebridge -f 01_schema.sql
-psql -d carebridge -f 02_seed_data.sql
-psql -d carebridge -f 03_constraint_tests.sql
+psql -d carebridge -f Oyediran_Taiwo_301921478_P1_01_schema.sql
+psql -d carebridge -f Oyediran_Taiwo_301921478_P1_02_seed_data.sql
+psql -d carebridge -f Oyediran_Taiwo_301921478_P1_03_constraint_tests.sql
 ```
 
 ## 7. Evidence
 
-![Schema created](screenshots/01-schema-created.png)
+![Schema created](screenshots/Oyediran_Taiwo_301921478_P1_01-schema-created.png)
 
-*`01_schema.sql` runs without errors: the schema, extension, 7 enum types, 21 tables, indexes and the `v_bill_balance` view are all created.*
+*`Oyediran_Taiwo_301921478_P1_01_schema.sql` runs without errors: the schema, extension, 7 enum types, 21 tables, indexes and the `v_bill_balance` view are all created.*
 
-![Seed data run](screenshots/02-seed-data-run.png)
+![Seed data run](screenshots/Oyediran_Taiwo_301921478_P1_02-seed-data-run.png)
 
-*`02_seed_data.sql` inserts the reference data and then the generated transactional data in dependency order, with no foreign key or check violations.*
+*`Oyediran_Taiwo_301921478_P1_02_seed_data.sql` inserts the reference data and then the generated transactional data in dependency order, with no foreign key or check violations.*
 
-![Row counts](screenshots/03-seed-row-counts.png)
+![Row counts](screenshots/Oyediran_Taiwo_301921478_P1_03-seed-row-counts.png)
 
 *Row counts per table after seeding, showing the database is large enough for the optimisation work in Portfolio 2.*
 
-![Constraint tests](screenshots/04-constraint-tests.png)
+![Constraint tests](screenshots/Oyediran_Taiwo_301921478_P1_04-constraint-tests.png)
 
 *All 25 constraint tests pass (25 passed, 0 failed): valid rows are accepted, invalid rows are rejected by the named constraint, and the whole script rolls back so the data is left unchanged.*
 
 ## 8. Challenges and What I Learned
 
-The first time I ran `01_schema.sql` it printed `NOTICE: schema "carebridge" does not exist, skipping`. At first I thought it was an error, but it comes from `DROP SCHEMA IF EXISTS` on a fresh database and is what makes the script safe to re-run. My first ERD also linked appointments, dispensing and lab results straight to doctors, which left no way to record which receptionist, pharmacist or lab scientist did the work, so I added a `staff` supertype with `doctors` as a subtype. Writing the constraint tests showed me that rules such as "no double booking" belong in the database itself, not only in the application.
+The first time I ran `Oyediran_Taiwo_301921478_P1_01_schema.sql` it printed `NOTICE: schema "carebridge" does not exist, skipping`. At first I thought it was an error, but it comes from `DROP SCHEMA IF EXISTS` on a fresh database and is what makes the script safe to re-run. My first ERD also linked appointments, dispensing and lab results straight to doctors, which left no way to record which receptionist, pharmacist or lab scientist did the work, so I added a `staff` supertype with `doctors` as a subtype. Writing the constraint tests showed me that rules such as "no double booking" belong in the database itself, not only in the application.

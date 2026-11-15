@@ -1,5 +1,5 @@
 // CareBridge Portfolio 4: query plans before and after indexing
-// mongosh --quiet carebridge 06_indexes_explain.js
+// mongosh --quiet carebridge Oyediran_Taiwo_301921478_P4_06_indexes_explain.js
 
 const lagos = s => new Date(s + '+01:00');
 const day = { $gte: lagos('2026-03-09T00:00'), $lt: lagos('2026-03-10T00:00') };

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # CareBridge Portfolio 5: create a streaming replica of the carebridge server on port 5433
-cd "$(dirname "$0")" && source env.sh
-if [ -d "$REPLICA_DIR" ]; then echo "A replica already exists in $REPLICA_DIR. Run 99_teardown_replica.sh first."; exit 1; fi
+cd "$(dirname "$0")" && source Oyediran_Taiwo_301921478_P5_env.sh
+if [ -d "$REPLICA_DIR" ]; then echo "A replica already exists in $REPLICA_DIR. Run Oyediran_Taiwo_301921478_P5_99_teardown_replica.sh first."; exit 1; fi
 mkdir -p "$P5_DIR"
 
 step "1. Copy the primary with pg_basebackup (also creates replication slot $SLOT)"

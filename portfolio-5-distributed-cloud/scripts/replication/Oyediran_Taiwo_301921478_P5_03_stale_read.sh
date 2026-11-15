@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # CareBridge Portfolio 5: asynchronous replication means a replica can be behind (stale read)
-cd "$(dirname "$0")" && source env.sh
+cd "$(dirname "$0")" && source Oyediran_Taiwo_301921478_P5_env.sh
 
 step "1. Simulate a slow replica by pausing WAL replay"
 r "SELECT pg_wal_replay_pause();"

@@ -8,18 +8,18 @@ CareBridge runs three branches that share one set of patient records, and a pati
 
 | File | Purpose |
 |---|---|
-| [scripts/replication/01_setup_replica.sh](scripts/replication/01_setup_replica.sh) | `pg_basebackup` copy of the primary, replication slot, start the replica on 5433 |
-| [scripts/replication/02_read_write.sh](scripts/replication/02_read_write.sh) | Write on primary, read on replica, replica refuses writes |
-| [scripts/replication/03_stale_read.sh](scripts/replication/03_stale_read.sh) | Replica behind the primary (stale read) |
-| [scripts/replication/04_sync_replication.sh](scripts/replication/04_sync_replication.sh) | Asynchronous vs synchronous commit, replica down during synchronous commit |
-| [scripts/replication/05_failover.sh](scripts/replication/05_failover.sh) | Promote the replica, split brain |
-| [scripts/replication/99_teardown_replica.sh](scripts/replication/99_teardown_replica.sh) | Remove the replica and slot, restore settings |
-| [scripts/sharding/01_start_cluster.sh](scripts/sharding/01_start_cluster.sh) | Config server, 3 shards, `mongos` |
-| [scripts/sharding/02_load_data.sh](scripts/sharding/02_load_data.sh) + [02_shard_patients.js](scripts/sharding/02_shard_patients.js) | Zones per branch, shard `patients`, load data |
-| [scripts/sharding/03_routing.js](scripts/sharding/03_routing.js) | Targeted vs scatter-gather queries, unique index limit, shard key analysis |
-| [scripts/sharding/04_distributed_transaction.js](scripts/sharding/04_distributed_transaction.js) | Transaction across two shards, moving a document between shards |
-| [scripts/sharding/05_shard_failure.sh](scripts/sharding/05_shard_failure.sh) | Yaba shard down: what still works |
-| [scripts/sharding/99_stop_cluster.sh](scripts/sharding/99_stop_cluster.sh) | Stop the cluster and delete its data |
+| [scripts/replication/Oyediran_Taiwo_301921478_P5_01_setup_replica.sh](scripts/replication/Oyediran_Taiwo_301921478_P5_01_setup_replica.sh) | `pg_basebackup` copy of the primary, replication slot, start the replica on 5433 |
+| [scripts/replication/Oyediran_Taiwo_301921478_P5_02_read_write.sh](scripts/replication/Oyediran_Taiwo_301921478_P5_02_read_write.sh) | Write on primary, read on replica, replica refuses writes |
+| [scripts/replication/Oyediran_Taiwo_301921478_P5_03_stale_read.sh](scripts/replication/Oyediran_Taiwo_301921478_P5_03_stale_read.sh) | Replica behind the primary (stale read) |
+| [scripts/replication/Oyediran_Taiwo_301921478_P5_04_sync_replication.sh](scripts/replication/Oyediran_Taiwo_301921478_P5_04_sync_replication.sh) | Asynchronous vs synchronous commit, replica down during synchronous commit |
+| [scripts/replication/Oyediran_Taiwo_301921478_P5_05_failover.sh](scripts/replication/Oyediran_Taiwo_301921478_P5_05_failover.sh) | Promote the replica, split brain |
+| [scripts/replication/Oyediran_Taiwo_301921478_P5_99_teardown_replica.sh](scripts/replication/Oyediran_Taiwo_301921478_P5_99_teardown_replica.sh) | Remove the replica and slot, restore settings |
+| [scripts/sharding/Oyediran_Taiwo_301921478_P5_01_start_cluster.sh](scripts/sharding/Oyediran_Taiwo_301921478_P5_01_start_cluster.sh) | Config server, 3 shards, `mongos` |
+| [scripts/sharding/Oyediran_Taiwo_301921478_P5_02_load_data.sh](scripts/sharding/Oyediran_Taiwo_301921478_P5_02_load_data.sh) + [Oyediran_Taiwo_301921478_P5_02_shard_patients.js](scripts/sharding/Oyediran_Taiwo_301921478_P5_02_shard_patients.js) | Zones per branch, shard `patients`, load data |
+| [scripts/sharding/Oyediran_Taiwo_301921478_P5_03_routing.js](scripts/sharding/Oyediran_Taiwo_301921478_P5_03_routing.js) | Targeted vs scatter-gather queries, unique index limit, shard key analysis |
+| [scripts/sharding/Oyediran_Taiwo_301921478_P5_04_distributed_transaction.js](scripts/sharding/Oyediran_Taiwo_301921478_P5_04_distributed_transaction.js) | Transaction across two shards, moving a document between shards |
+| [scripts/sharding/Oyediran_Taiwo_301921478_P5_05_shard_failure.sh](scripts/sharding/Oyediran_Taiwo_301921478_P5_05_shard_failure.sh) | Yaba shard down: what still works |
+| [scripts/sharding/Oyediran_Taiwo_301921478_P5_99_stop_cluster.sh](scripts/sharding/Oyediran_Taiwo_301921478_P5_99_stop_cluster.sh) | Stop the cluster and delete its data |
 
 Both set-ups keep their data in `~/carebridge-p5`, outside the repository.
 
@@ -169,68 +169,68 @@ PACELC extends CAP: even with no partition (**E**lse), there is a trade-off betw
 
 ```bash
 cd portfolio-5-distributed-cloud/scripts/replication
-./01_setup_replica.sh
-./02_read_write.sh
-./03_stale_read.sh
-./04_sync_replication.sh
-./05_failover.sh
-./99_teardown_replica.sh
+./Oyediran_Taiwo_301921478_P5_01_setup_replica.sh
+./Oyediran_Taiwo_301921478_P5_02_read_write.sh
+./Oyediran_Taiwo_301921478_P5_03_stale_read.sh
+./Oyediran_Taiwo_301921478_P5_04_sync_replication.sh
+./Oyediran_Taiwo_301921478_P5_05_failover.sh
+./Oyediran_Taiwo_301921478_P5_99_teardown_replica.sh
 
 cd ../sharding
-./01_start_cluster.sh
-./02_load_data.sh
-mongosh --quiet --port 27100 carebridge 03_routing.js
-mongosh --quiet --port 27100 carebridge 04_distributed_transaction.js
-./05_shard_failure.sh
-./99_stop_cluster.sh
+./Oyediran_Taiwo_301921478_P5_01_start_cluster.sh
+./Oyediran_Taiwo_301921478_P5_02_load_data.sh
+mongosh --quiet --port 27100 carebridge Oyediran_Taiwo_301921478_P5_03_routing.js
+mongosh --quiet --port 27100 carebridge Oyediran_Taiwo_301921478_P5_04_distributed_transaction.js
+./Oyediran_Taiwo_301921478_P5_05_shard_failure.sh
+./Oyediran_Taiwo_301921478_P5_99_stop_cluster.sh
 ```
 
 ## Evidence
 
-![Replica set-up](screenshots/01-replica-setup.png)
+![Replica set-up](screenshots/Oyediran_Taiwo_301921478_P5_01-replica-setup.png)
 
 *The replica was created with `pg_basebackup` and a replication slot. It is streaming asynchronously, is in recovery, and has all 5,000 patients.*
 
-![Replica read and write](screenshots/02-replica-read-write.png)
+![Replica read and write](screenshots/Oyediran_Taiwo_301921478_P5_02-replica-read-write.png)
 
 *A patient written on the primary appeared on the replica within about 3 ms, and the replica refused INSERT and UPDATE as read-only.*
 
-![Stale read](screenshots/03-stale-read.png)
+![Stale read](screenshots/Oyediran_Taiwo_301921478_P5_03-stale-read.png)
 
 *With replay paused, the new patient was on the primary but not on the replica (8,624 bytes behind). After resuming, the replica caught up.*
 
-![Synchronous replication, part 1](screenshots/04-sync-replication-1.png)
+![Synchronous replication, part 1](screenshots/Oyediran_Taiwo_301921478_P5_04-sync-replication-1.png)
 
 *Synchronous commit doubled latency and halved throughput. With the replica down, an INSERT hung in `SyncRep` until cancelled, after having already committed locally.*
 
-![Synchronous replication, part 2](screenshots/05-sync-replication-2.png)
+![Synchronous replication, part 2](screenshots/Oyediran_Taiwo_301921478_P5_05-sync-replication-2.png)
 
 *Replication was switched back to asynchronous and the replica restarted and reconnected.*
 
-![Failover and split brain](screenshots/06-failover-split-brain.png)
+![Failover and split brain](screenshots/Oyediran_Taiwo_301921478_P5_06-failover-split-brain.png)
 
 *`pg_promote()` moved the replica to timeline 2 as a new primary. The old primary also kept accepting writes, so the two servers held different patients (split brain).*
 
-![Replica teardown](screenshots/07-replica-teardown.png)
+![Replica teardown](screenshots/Oyediran_Taiwo_301921478_P5_07-replica-teardown.png)
 
 *The replica and its replication slot were removed, and the primary was returned to its original settings.*
 
-![Sharded cluster started](screenshots/08-cluster-started.png)
+![Sharded cluster started](screenshots/Oyediran_Taiwo_301921478_P5_08-cluster-started.png)
 
 *The config server, three branch shards and the mongos router were started, and the shards were registered with the cluster.*
 
-![Sharded data](screenshots/09-sharded-data.png)
+![Sharded data](screenshots/Oyediran_Taiwo_301921478_P5_09-sharded-data.png)
 
 *Zones placed each branch's patients only on its own shard (1,645 / 1,704 / 1,651, total 5,000), with `doctor_days` on shard_lekki.*
 
-![Query routing](screenshots/10-query-routing.png)
+![Query routing](screenshots/Oyediran_Taiwo_301921478_P5_10-query-routing.png)
 
 *Queries with the shard key went to one shard and queries without it went to all three. The unique MRN index was refused, and 67% of visits were at another branch.*
 
-![Distributed transaction](screenshots/11-distributed-transaction.png)
+![Distributed transaction](screenshots/Oyediran_Taiwo_301921478_P5_11-distributed-transaction.png)
 
 *A booking across shard_lekki and shard_yaba committed atomically, a simulated failure rolled back both writes, and changing the home branch moved a document to another shard.*
 
-![Shard failure](screenshots/12-shard-failure.png)
+![Shard failure](screenshots/Oyediran_Taiwo_301921478_P5_12-shard-failure.png)
 
 *With shard_yaba down, Lekki queries and the doctor diary still worked, while Yaba and scatter-gather queries timed out until the shard was restarted.*

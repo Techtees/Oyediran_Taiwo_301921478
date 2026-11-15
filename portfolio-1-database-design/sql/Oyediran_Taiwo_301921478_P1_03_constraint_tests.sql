@@ -1,5 +1,5 @@
 -- CareBridge constraint tests
--- psql -d carebridge -f 03_constraint_tests.sql   (run after 01 and 02)
+-- psql -d carebridge -f Oyediran_Taiwo_301921478_P1_03_constraint_tests.sql   (run after 01 and 02)
 
 BEGIN;
 SET search_path TO carebridge;

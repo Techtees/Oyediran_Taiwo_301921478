@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # CareBridge Portfolio 5: synchronous vs asynchronous commit, and what happens when the replica is down
-cd "$(dirname "$0")" && source env.sh
+cd "$(dirname "$0")" && source Oyediran_Taiwo_301921478_P5_env.sh
 trap 'psql -X -q -p 5432 -d carebridge -c "ALTER SYSTEM RESET synchronous_standby_names" -c "SELECT pg_reload_conf()" >/dev/null' EXIT
 p "CREATE TABLE IF NOT EXISTS public.p5_commit_test (id serial PRIMARY KEY, at timestamptz DEFAULT now());" >/dev/null
 echo 'INSERT INTO public.p5_commit_test DEFAULT VALUES;' > "$P5_DIR/insert.sql"

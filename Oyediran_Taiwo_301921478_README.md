@@ -30,3 +30,6 @@
 3. Transactions and Concurrency
 4. NoSQL and Advanced Data Models
 5. Distributed and Cloud Database Exercise
+
+## File naming
+All files follow the `Surname_Firstname_StudentID_P<n>_<name>` convention (renamed on 15 November 2026). Screenshots taken before the rename show the original file names, e.g. `01_schema.sql` for `Oyediran_Taiwo_301921478_P1_01_schema.sql`.

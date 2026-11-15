@@ -1,5 +1,5 @@
 -- CareBridge Portfolio 2: remove the Portfolio 2 indexes to return to the baseline
--- psql -d carebridge -f 05_drop_indexes.sql
+-- psql -d carebridge -f Oyediran_Taiwo_301921478_P2_05_drop_indexes.sql
 
 SET search_path TO carebridge;
 

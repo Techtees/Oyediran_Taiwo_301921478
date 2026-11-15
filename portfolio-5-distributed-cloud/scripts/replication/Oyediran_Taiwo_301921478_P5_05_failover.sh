@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # CareBridge Portfolio 5: promote the replica (failover) and see why the old primary must be fenced
-cd "$(dirname "$0")" && source env.sh
+cd "$(dirname "$0")" && source Oyediran_Taiwo_301921478_P5_env.sh
 
 step "1. Before failover"
 r "SELECT pg_is_in_recovery() AS is_replica, timeline_id FROM pg_control_checkpoint();"
@@ -23,4 +23,4 @@ p "SELECT slot_name, active FROM pg_replication_slots;"
 
 p "DELETE FROM carebridge.patients WHERE mrn IN ('CB-900010', 'CB-900011');"
 echo
-echo "The two servers have now diverged. Run 99_teardown_replica.sh to remove the old replica."
+echo "The two servers have now diverged. Run Oyediran_Taiwo_301921478_P5_99_teardown_replica.sh to remove the old replica."

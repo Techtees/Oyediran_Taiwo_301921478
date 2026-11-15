@@ -8,14 +8,14 @@ This portfolio shows how PostgreSQL keeps CareBridge's data correct when work fa
 
 | File | Purpose |
 |---|---|
-| [sql/00_setup_demo_data.sql](sql/00_setup_demo_data.sql) | Adds fixed demo rows (IDs 900001+): two drugs with 10 packs each at Lekki, two consultations, prescriptions and bills |
-| [sql/01_commit_rollback.sql](sql/01_commit_rollback.sql) | COMMIT, ROLLBACK after an error, and SAVEPOINT (one session) |
-| [sql/02_lost_update.sql](sql/02_lost_update.sql) | Two pharmacists update the same stock row |
-| [sql/03_double_booking.sql](sql/03_double_booking.sql) | Two receptionists book overlapping slots for the same doctor |
-| [sql/04_overpayment_isolation.sql](sql/04_overpayment_isolation.sql) | Two staff take payment for the same bill, under each isolation level |
-| [sql/05_deadlock.sql](sql/05_deadlock.sql) | Two pharmacists lock the same two drugs in opposite order |
-| [sql/06_stress_test.sh](sql/06_stress_test.sh) + [sql/pgbench/](sql/pgbench/) | 10 concurrent clients, 2,000 dispenses, three locking methods |
-| [sql/99_reset_demo_data.sql](sql/99_reset_demo_data.sql) | Removes every demo row |
+| [sql/Oyediran_Taiwo_301921478_P3_00_setup_demo_data.sql](sql/Oyediran_Taiwo_301921478_P3_00_setup_demo_data.sql) | Adds fixed demo rows (IDs 900001+): two drugs with 10 packs each at Lekki, two consultations, prescriptions and bills |
+| [sql/Oyediran_Taiwo_301921478_P3_01_commit_rollback.sql](sql/Oyediran_Taiwo_301921478_P3_01_commit_rollback.sql) | COMMIT, ROLLBACK after an error, and SAVEPOINT (one session) |
+| [sql/Oyediran_Taiwo_301921478_P3_02_lost_update.sql](sql/Oyediran_Taiwo_301921478_P3_02_lost_update.sql) | Two pharmacists update the same stock row |
+| [sql/Oyediran_Taiwo_301921478_P3_03_double_booking.sql](sql/Oyediran_Taiwo_301921478_P3_03_double_booking.sql) | Two receptionists book overlapping slots for the same doctor |
+| [sql/Oyediran_Taiwo_301921478_P3_04_overpayment_isolation.sql](sql/Oyediran_Taiwo_301921478_P3_04_overpayment_isolation.sql) | Two staff take payment for the same bill, under each isolation level |
+| [sql/Oyediran_Taiwo_301921478_P3_05_deadlock.sql](sql/Oyediran_Taiwo_301921478_P3_05_deadlock.sql) | Two pharmacists lock the same two drugs in opposite order |
+| [sql/Oyediran_Taiwo_301921478_P3_06_stress_test.sh](sql/Oyediran_Taiwo_301921478_P3_06_stress_test.sh) + [sql/pgbench/](sql/pgbench/) | 10 concurrent clients, 2,000 dispenses, three locking methods |
+| [sql/Oyediran_Taiwo_301921478_P3_99_reset_demo_data.sql](sql/Oyediran_Taiwo_301921478_P3_99_reset_demo_data.sql) | Removes every demo row |
 
 ## 1. Atomicity: COMMIT, ROLLBACK and SAVEPOINT
 
@@ -41,7 +41,7 @@ Two pharmacists at Lekki each dispense 4 packs of Ceftriaxone at the same moment
 
 In round 1 both pharmacists read the value 10 before either had written anything. Each one worked out 10 − 4 in their head (the application) and wrote back 6, so B's write simply overwrote A's, and 8 packs left the shelf while the stock dropped by only 4. READ COMMITTED does not prevent this because each statement on its own is valid. **Pessimistic** locking (`FOR UPDATE`) assumes a conflict will happen and locks the row when reading it, so the second pharmacist has to wait and then reads the up-to-date value. **Optimistic** control (REPEATABLE READ) lets both go ahead without locks, but when B tries to update a row that changed after its snapshot was taken, PostgreSQL refuses, and the application has to retry the whole transaction.
 
-### Under Load (`06_stress_test.sh`)
+### Under Load (`Oyediran_Taiwo_301921478_P3_06_stress_test.sh`)
 
 | Method | Expected | Actual | Lost updates | Transactions/s |
 |---|---|---|---|---|
@@ -104,70 +104,70 @@ The SERIALIZABLE result for lost updates follows from it being stricter than REP
 
 ```bash
 cd portfolio-3-transactions-concurrency/sql
-psql -d carebridge -f 00_setup_demo_data.sql
-psql -d carebridge -f 01_commit_rollback.sql
+psql -d carebridge -f Oyediran_Taiwo_301921478_P3_00_setup_demo_data.sql
+psql -d carebridge -f Oyediran_Taiwo_301921478_P3_01_commit_rollback.sql
 # 02–05: open two terminals side by side, run psql -d carebridge in each,
 #        SET search_path TO carebridge; then paste each step into the window shown ([A] or [B])
-./06_stress_test.sh carebridge
-psql -d carebridge -f 99_reset_demo_data.sql
+./Oyediran_Taiwo_301921478_P3_06_stress_test.sh carebridge
+psql -d carebridge -f Oyediran_Taiwo_301921478_P3_99_reset_demo_data.sql
 ```
 
-Run `00_setup_demo_data.sql` again before any scenario to start from the same state.
+Run `Oyediran_Taiwo_301921478_P3_00_setup_demo_data.sql` again before any scenario to start from the same state.
 
 ## 8. Evidence
 
-![Demo data](screenshots/01-setup-demo-data.png)
+![Demo data](screenshots/Oyediran_Taiwo_301921478_P3_01-setup-demo-data.png)
 
 *The demo rows were created: 10 packs each of Ceftriaxone and Insulin Glargine at Lekki, and two ₦15,000 bills.*
 
-![Commit, rollback, savepoint](screenshots/02-commit-rollback.png)
+![Commit, rollback, savepoint](screenshots/Oyediran_Taiwo_301921478_P3_02-commit-rollback.png)
 
 *The committed dispense changed all four tables, the failed insulin dispense was fully rolled back, and the savepoint kept only the item that succeeded.*
 
-![Lost update, READ COMMITTED](screenshots/03-lost-update-read-committed.png)
+![Lost update, READ COMMITTED](screenshots/Oyediran_Taiwo_301921478_P3_03-lost-update-read-committed.png)
 
 *Under READ COMMITTED both pharmacists read 10 and wrote 6, so one dispense of 4 packs was lost.*
 
-![Lost update, FOR UPDATE](screenshots/04-lost-update-for-update.png)
+![Lost update, FOR UPDATE](screenshots/Oyediran_Taiwo_301921478_P3_04-lost-update-for-update.png)
 
 *With FOR UPDATE, session B waited, then read 6 and wrote 2, which is the correct final stock.*
 
-![Lost update, REPEATABLE READ](screenshots/05-lost-update-repeatable-read.png)
+![Lost update, REPEATABLE READ](screenshots/Oyediran_Taiwo_301921478_P3_05-lost-update-repeatable-read.png)
 
 *Under REPEATABLE READ, B's update was rejected with a serialization error. The retry read 6 and wrote 2.*
 
-![Double booking blocked](screenshots/06-double-booking-blocked.png)
+![Double booking blocked](screenshots/Oyediran_Taiwo_301921478_P3_06-double-booking-blocked.png)
 
 *Both receptionists saw 0 clashes, but the second overlapping booking was rejected by `ex_doctor_no_overlap` once the first committed.*
 
-![Double booking after rollback](screenshots/07-double-booking-rollback.png)
+![Double booking after rollback](screenshots/Oyediran_Taiwo_301921478_P3_07-double-booking-rollback.png)
 
 *When the first booking was rolled back, the waiting booking succeeded, so only one appointment holds the 11:00 slot.*
 
-![Overpayment, READ COMMITTED](screenshots/08-overpayment-read-committed.png)
+![Overpayment, READ COMMITTED](screenshots/Oyediran_Taiwo_301921478_P3_08-overpayment-read-committed.png)
 
 *Under READ COMMITTED both payments were accepted, and the bill was overpaid with a balance of −₦15,000.*
 
-![Overpayment, REPEATABLE READ](screenshots/09-overpayment-repeatable-read.png)
+![Overpayment, REPEATABLE READ](screenshots/Oyediran_Taiwo_301921478_P3_09-overpayment-repeatable-read.png)
 
 *REPEATABLE READ also accepted both payments, which shows write skew is not prevented at this level.*
 
-![Overpayment, SERIALIZABLE](screenshots/10-overpayment-serializable.png)
+![Overpayment, SERIALIZABLE](screenshots/Oyediran_Taiwo_301921478_P3_10-overpayment-serializable.png)
 
 *SERIALIZABLE cancelled the second payment at COMMIT with a read/write dependency error, so the balance stayed at ₦0.*
 
-![Overpayment, FOR UPDATE](screenshots/11-overpayment-for-update.png)
+![Overpayment, FOR UPDATE](screenshots/Oyediran_Taiwo_301921478_P3_11-overpayment-for-update.png)
 
 *Locking the bill row made B wait. It then saw a balance of ₦0 and took no second payment.*
 
-![Deadlock](screenshots/12-deadlock.png)
+![Deadlock](screenshots/Oyediran_Taiwo_301921478_P3_12-deadlock.png)
 
 *Locking in opposite order caused `deadlock detected`. PostgreSQL rolled back one transaction and the other completed (9 and 9).*
 
-![Deadlock fixed](screenshots/13-deadlock-fixed.png)
+![Deadlock fixed](screenshots/Oyediran_Taiwo_301921478_P3_13-deadlock-fixed.png)
 
 *Locking both rows in `medication_id` order turned the deadlock into a wait, and both dispenses were saved (8 and 8).*
 
-![Stress test](screenshots/14-stress-test.png)
+![Stress test](screenshots/Oyediran_Taiwo_301921478_P3_14-stress-test.png)
 
 *Under 10 concurrent clients the read-then-write method lost 1,748 updates, while FOR UPDATE and the atomic UPDATE lost none. The atomic UPDATE was the fastest.*

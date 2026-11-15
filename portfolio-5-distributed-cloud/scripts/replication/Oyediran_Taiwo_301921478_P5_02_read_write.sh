@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # CareBridge Portfolio 5: writes go to the primary and appear on the replica; the replica refuses writes
-cd "$(dirname "$0")" && source env.sh
+cd "$(dirname "$0")" && source Oyediran_Taiwo_301921478_P5_env.sh
 
 step "1. Reception at Lekki registers a new patient on the primary"
 p "INSERT INTO carebridge.patients (mrn, first_name, last_name, dob, gender, home_branch_id)

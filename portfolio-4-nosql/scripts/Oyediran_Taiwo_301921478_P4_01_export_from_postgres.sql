@@ -1,5 +1,5 @@
 -- CareBridge Portfolio 4: export PostgreSQL data as MongoDB documents (one JSON document per line)
--- Run by 02_import.sh
+-- Run by Oyediran_Taiwo_301921478_P4_02_import.sh
 
 \set ON_ERROR_STOP on
 SET search_path TO carebridge;

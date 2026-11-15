@@ -1,8 +1,8 @@
 -- CareBridge Portfolio 3: fixed demo rows used by every scenario
--- psql -d carebridge -f 00_setup_demo_data.sql
+-- psql -d carebridge -f Oyediran_Taiwo_301921478_P3_00_setup_demo_data.sql
 
 SET search_path TO carebridge;
-\ir 99_reset_demo_data.sql
+\ir Oyediran_Taiwo_301921478_P3_99_reset_demo_data.sql
 
 INSERT INTO medications (medication_id, name, form, strength, unit_price) OVERRIDING SYSTEM VALUE
 VALUES (900001, 'Ceftriaxone',      'injection', '1g',       2500.00),

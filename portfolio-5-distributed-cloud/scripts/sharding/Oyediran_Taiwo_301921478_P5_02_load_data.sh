@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # CareBridge Portfolio 5: shard the collection, then load the Portfolio 4 documents through mongos
-cd "$(dirname "$0")" && source env.sh
+cd "$(dirname "$0")" && source Oyediran_Taiwo_301921478_P5_env.sh
 if [ ! -f "$P4_DATA/patients.json" ]; then
   echo "Portfolio 4 export not found, running it first"
-  (cd ../../../portfolio-4-nosql/scripts && psql -X -q -d carebridge -f 01_export_from_postgres.sql)
+  (cd ../../../portfolio-4-nosql/scripts && psql -X -q -d carebridge -f Oyediran_Taiwo_301921478_P4_01_export_from_postgres.sql)
 fi
 
 step "1. Define zones and shard carebridge.patients"
-mongosh --quiet --port 27100 02_shard_patients.js
+mongosh --quiet --port 27100 Oyediran_Taiwo_301921478_P5_02_shard_patients.js
 
 step "2. Load 5,000 patients and the unsharded doctor_days collection through mongos"
 mongoimport --quiet --port 27100 --db carebridge --collection patients    --file "$P4_DATA/patients.json"

@@ -1,5 +1,5 @@
 -- CareBridge Portfolio 3: remove all demo rows (IDs from 900000 upwards)
--- psql -d carebridge -f 99_reset_demo_data.sql
+-- psql -d carebridge -f Oyediran_Taiwo_301921478_P3_99_reset_demo_data.sql
 
 SET search_path TO carebridge;
 

@@ -1,7 +1,7 @@
 -- CareBridge Portfolio 2: benchmark summary
 -- Runs each query 1 warm-up + 7 timed times with EXPLAIN ANALYZE and reports the median.
--- Run before and after 03_create_indexes.sql:
---   psql -d carebridge -f 04_benchmark.sql
+-- Run before and after Oyediran_Taiwo_301921478_P2_03_create_indexes.sql:
+--   psql -d carebridge -f Oyediran_Taiwo_301921478_P2_04_benchmark.sql
 
 SET search_path TO carebridge;
 

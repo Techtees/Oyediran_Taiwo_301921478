@@ -1,5 +1,5 @@
 -- CareBridge Clinics schema (PostgreSQL)
--- psql -d carebridge -f 01_schema.sql
+-- psql -d carebridge -f Oyediran_Taiwo_301921478_P1_01_schema.sql
 
 DROP SCHEMA IF EXISTS carebridge CASCADE;
 CREATE SCHEMA carebridge;

@@ -1,5 +1,5 @@
 // CareBridge Portfolio 4: JSON Schema validation on the patients collection
-// mongosh --quiet carebridge 04_schema_validation.js
+// mongosh --quiet carebridge Oyediran_Taiwo_301921478_P4_04_schema_validation.js
 
 db.runCommand({
   collMod: 'patients',

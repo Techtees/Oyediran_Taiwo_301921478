@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # CareBridge Portfolio 5: the Yaba shard goes down - what still works?
-cd "$(dirname "$0")" && source env.sh
+cd "$(dirname "$0")" && source Oyediran_Taiwo_301921478_P5_env.sh
 
 q() {
   printf '\n\033[1;36m[mongos]\033[0m %s\n' "$1"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # CareBridge Portfolio 5: local sharded cluster - 1 config server, 3 shards (one per branch), 1 mongos router
-cd "$(dirname "$0")" && source env.sh
+cd "$(dirname "$0")" && source Oyediran_Taiwo_301921478_P5_env.sh
 mkdir -p "$MDIR"/{config,ikeja,lekki,yaba,logs}
 
 start() {

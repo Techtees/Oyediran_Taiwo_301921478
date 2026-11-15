@@ -1,5 +1,5 @@
 // CareBridge Portfolio 5: how mongos routes queries to shards
-// mongosh --quiet --port 27100 carebridge 03_routing.js
+// mongosh --quiet --port 27100 carebridge Oyediran_Taiwo_301921478_P5_03_routing.js
 
 function route(label, explain) {
   const plan = explain.queryPlanner?.winningPlan;

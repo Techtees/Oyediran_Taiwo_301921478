@@ -1,5 +1,5 @@
 -- CareBridge Clinics synthetic data (no real patients)
--- psql -d carebridge -f 02_seed_data.sql   (run after 01_schema.sql)
+-- psql -d carebridge -f Oyediran_Taiwo_301921478_P1_02_seed_data.sql   (run after Oyediran_Taiwo_301921478_P1_01_schema.sql)
 
 SET search_path TO carebridge;
 SET max_parallel_workers_per_gather = 0;

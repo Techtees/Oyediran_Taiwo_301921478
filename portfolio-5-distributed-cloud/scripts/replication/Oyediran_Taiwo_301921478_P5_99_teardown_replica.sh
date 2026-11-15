@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # CareBridge Portfolio 5: stop and remove the replica, drop the slot, restore primary settings
-cd "$(dirname "$0")" && source env.sh
+cd "$(dirname "$0")" && source Oyediran_Taiwo_301921478_P5_env.sh
 [ -d "$REPLICA_DIR" ] && "$PGBIN/pg_ctl" -D "$REPLICA_DIR" -m fast stop 2>/dev/null
 rm -rf "$REPLICA_DIR" "$P5_DIR/pg_replica.log" "$P5_DIR/insert.sql" "$P5_DIR/waiting.out"
 psql -X -q -p 5432 -d carebridge <<SQL

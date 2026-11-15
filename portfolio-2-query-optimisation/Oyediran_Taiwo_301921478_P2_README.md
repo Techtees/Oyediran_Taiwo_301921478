@@ -8,13 +8,13 @@ This portfolio takes nine queries that CareBridge staff would really run every d
 
 | File | Purpose |
 |---|---|
-| [sql/01_queries.sql](sql/01_queries.sql) | The 9 workload queries and their results |
-| [sql/02_explain_plans.sql](sql/02_explain_plans.sql) | `EXPLAIN (ANALYZE, BUFFERS)` for every query |
-| [sql/03_create_indexes.sql](sql/03_create_indexes.sql) | The 6 indexes added after analysing the plans |
-| [sql/04_benchmark.sql](sql/04_benchmark.sql) | Median of 7 timed runs per query, plus the access path used |
-| [sql/05_drop_indexes.sql](sql/05_drop_indexes.sql) | Removes the indexes to return to the baseline |
-| [execution-plans/before-indexes.txt](execution-plans/before-indexes.txt) | Full plans before optimisation |
-| [execution-plans/after-indexes.txt](execution-plans/after-indexes.txt) | Full plans after optimisation |
+| [sql/Oyediran_Taiwo_301921478_P2_01_queries.sql](sql/Oyediran_Taiwo_301921478_P2_01_queries.sql) | The 9 workload queries and their results |
+| [sql/Oyediran_Taiwo_301921478_P2_02_explain_plans.sql](sql/Oyediran_Taiwo_301921478_P2_02_explain_plans.sql) | `EXPLAIN (ANALYZE, BUFFERS)` for every query |
+| [sql/Oyediran_Taiwo_301921478_P2_03_create_indexes.sql](sql/Oyediran_Taiwo_301921478_P2_03_create_indexes.sql) | The 6 indexes added after analysing the plans |
+| [sql/Oyediran_Taiwo_301921478_P2_04_benchmark.sql](sql/Oyediran_Taiwo_301921478_P2_04_benchmark.sql) | Median of 7 timed runs per query, plus the access path used |
+| [sql/Oyediran_Taiwo_301921478_P2_05_drop_indexes.sql](sql/Oyediran_Taiwo_301921478_P2_05_drop_indexes.sql) | Removes the indexes to return to the baseline |
+| [execution-plans/Oyediran_Taiwo_301921478_P2_before-indexes.txt](execution-plans/Oyediran_Taiwo_301921478_P2_before-indexes.txt) | Full plans before optimisation |
+| [execution-plans/Oyediran_Taiwo_301921478_P2_after-indexes.txt](execution-plans/Oyediran_Taiwo_301921478_P2_after-indexes.txt) | Full plans after optimisation |
 
 ## 1. The Workload
 
@@ -32,10 +32,10 @@ Q1, Q2, Q5 and Q7 are short lookups run many times a day, so their response time
 
 ## 2. Method
 
-- **Baseline.** I dropped all Portfolio 2 indexes (`05_drop_indexes.sql`) so only the Portfolio 1 keys and indexes existed, ran the queries to check the results were correct (`01_queries.sql`), and saved the full `EXPLAIN (ANALYZE, BUFFERS)` output to `before-indexes.txt`.
+- **Baseline.** I dropped all Portfolio 2 indexes (`Oyediran_Taiwo_301921478_P2_05_drop_indexes.sql`) so only the Portfolio 1 keys and indexes existed, ran the queries to check the results were correct (`Oyediran_Taiwo_301921478_P2_01_queries.sql`), and saved the full `EXPLAIN (ANALYZE, BUFFERS)` output to `Oyediran_Taiwo_301921478_P2_before-indexes.txt`.
 - **Analyse.** For each plan I looked at which table was being read with a Seq Scan, how many rows it read versus how many it actually needed, and where the time went.
-- **Improve.** I added one index per problem (`03_create_indexes.sql`), choosing the index type to fit the query: an expression index, a composite index and partial indexes. For Q3 and Q4 I also wrote a rewritten version (Q3b, Q4b) that returns the same result.
-- **Measure again.** I saved the new plans to `after-indexes.txt` and re-ran `04_benchmark.sql` to compare the times.
+- **Improve.** I added one index per problem (`Oyediran_Taiwo_301921478_P2_03_create_indexes.sql`), choosing the index type to fit the query: an expression index, a composite index and partial indexes. For Q3 and Q4 I also wrote a rewritten version (Q3b, Q4b) that returns the same result.
+- **Measure again.** I saved the new plans to `Oyediran_Taiwo_301921478_P2_after-indexes.txt` and re-ran `Oyediran_Taiwo_301921478_P2_04_benchmark.sql` to compare the times.
 
 **Why the median of 7 runs?** A single timing is not reliable. In screenshot 1, Q1 took 21 ms the first time through psql, but the benchmark median is 1.3 ms. The first run includes reading pages from disk into the cache, planning the query and psql's own round-trip, and later runs can be disturbed by whatever else the laptop is doing. The benchmark does one warm-up run and then takes the median of 7 `EXPLAIN ANALYZE` execution times, so one slow or fast outlier cannot change the result, and before and after are compared under the same warm-cache conditions.
 
@@ -88,37 +88,37 @@ Q7 was fast before I added anything because Portfolio 1 already created the inde
 
 ```bash
 cd portfolio-2-query-optimisation/sql
-psql -d carebridge -f 05_drop_indexes.sql
-psql -d carebridge -f 01_queries.sql
-psql -d carebridge -f 02_explain_plans.sql > ../execution-plans/before-indexes.txt
-psql -d carebridge -f 04_benchmark.sql
-psql -d carebridge -f 03_create_indexes.sql
-psql -d carebridge -f 02_explain_plans.sql > ../execution-plans/after-indexes.txt
-psql -d carebridge -f 04_benchmark.sql
+psql -d carebridge -f Oyediran_Taiwo_301921478_P2_05_drop_indexes.sql
+psql -d carebridge -f Oyediran_Taiwo_301921478_P2_01_queries.sql
+psql -d carebridge -f Oyediran_Taiwo_301921478_P2_02_explain_plans.sql > ../execution-plans/Oyediran_Taiwo_301921478_P2_before-indexes.txt
+psql -d carebridge -f Oyediran_Taiwo_301921478_P2_04_benchmark.sql
+psql -d carebridge -f Oyediran_Taiwo_301921478_P2_03_create_indexes.sql
+psql -d carebridge -f Oyediran_Taiwo_301921478_P2_02_explain_plans.sql > ../execution-plans/Oyediran_Taiwo_301921478_P2_after-indexes.txt
+psql -d carebridge -f Oyediran_Taiwo_301921478_P2_04_benchmark.sql
 ```
 
 ## 8. Evidence
 
-![Query results Q1–Q3](screenshots/01-query-results-q1-q3.png)
+![Query results Q1–Q3](screenshots/Oyediran_Taiwo_301921478_P2_01-query-results-q1-q3.png)
 
 *Q1–Q3 return correct results: two patients named Chinedu Okafor, Dr Abubakar's four appointments on 9 March 2026, and the same 20 outstanding Lekki bills from both Q3a and Q3b.*
 
-![Query results Q4–Q6](screenshots/02-query-results-q4-q6.png)
+![Query results Q4–Q6](screenshots/Oyediran_Taiwo_301921478_P2_02-query-results-q4-q6.png)
 
 *Q4b's revenue per branch for March 2026, the 20 oldest pending lab orders for Q5, and the start of Q6's diagnosis counts per department.*
 
-![Query results Q6–Q7](screenshots/03-query-results-q6-q7.png)
+![Query results Q6–Q7](screenshots/Oyediran_Taiwo_301921478_P2_03-query-results-q6-q7.png)
 
 *The rest of Q6 (35 rows) and Q7's 14-row visit history for patient CB-000123 across Ikeja, Lekki and Yaba.*
 
-![Benchmark before](screenshots/04-benchmark-before.png)
+![Benchmark before](screenshots/Oyediran_Taiwo_301921478_P2_04-benchmark-before.png)
 
 *Baseline benchmark: eight of the nine queries use a Seq Scan on their main table, and only Q7 already uses an index.*
 
-![Indexes created](screenshots/05-indexes-created.png)
+![Indexes created](screenshots/Oyediran_Taiwo_301921478_P2_05-indexes-created.png)
 
 *The six indexes were created successfully, with their sizes (about 2.9 MB in total).*
 
-![Benchmark after](screenshots/06-benchmark-after.png)
+![Benchmark after](screenshots/Oyediran_Taiwo_301921478_P2_06-benchmark-after.png)
 
 *Benchmark after indexing: the new indexes now appear in the access paths and Q1, Q2, Q3b and Q5 drop to well under 0.1 ms, while Q3a, Q4a and Q6 stay about the same.*

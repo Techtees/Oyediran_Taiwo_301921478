@@ -1,7 +1,7 @@
 -- CareBridge Portfolio 2: execution plans
--- Run before and after 03_create_indexes.sql and save the output:
---   psql -d carebridge -f 02_explain_plans.sql > ../execution-plans/before-indexes.txt
---   psql -d carebridge -f 02_explain_plans.sql > ../execution-plans/after-indexes.txt
+-- Run before and after Oyediran_Taiwo_301921478_P2_03_create_indexes.sql and save the output:
+--   psql -d carebridge -f Oyediran_Taiwo_301921478_P2_02_explain_plans.sql > ../execution-plans/Oyediran_Taiwo_301921478_P2_before-indexes.txt
+--   psql -d carebridge -f Oyediran_Taiwo_301921478_P2_02_explain_plans.sql > ../execution-plans/Oyediran_Taiwo_301921478_P2_after-indexes.txt
 
 SET search_path TO carebridge;
 

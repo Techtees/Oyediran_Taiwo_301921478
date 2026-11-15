@@ -8,15 +8,15 @@ In this portfolio I redesigned the CareBridge database as documents in MongoDB, 
 
 | File | Purpose |
 |---|---|
-| [scripts/01_export_from_postgres.sql](scripts/01_export_from_postgres.sql) | Builds one JSON document per patient and per doctor-day directly in PostgreSQL |
-| [scripts/02_import.sh](scripts/02_import.sh) | Runs the export, loads both collections with `mongoimport`, compares counts |
-| [scripts/03_count_postgres.sql](scripts/03_count_postgres.sql), [scripts/03_count_mongodb.js](scripts/03_count_mongodb.js) | The two sides of the count check |
-| [scripts/04_schema_validation.js](scripts/04_schema_validation.js) | `$jsonSchema` validator and 7 test inserts |
-| [scripts/05_queries.js](scripts/05_queries.js) | Portfolio 2 queries rewritten for MongoDB |
-| [scripts/06_indexes_explain.js](scripts/06_indexes_explain.js) | `explain('executionStats')` before and after 5 indexes |
-| [scripts/07_updates.js](scripts/07_updates.js) | Atomic booking and payment, transactions, cost of duplicated data |
+| [scripts/Oyediran_Taiwo_301921478_P4_01_export_from_postgres.sql](scripts/Oyediran_Taiwo_301921478_P4_01_export_from_postgres.sql) | Builds one JSON document per patient and per doctor-day directly in PostgreSQL |
+| [scripts/Oyediran_Taiwo_301921478_P4_02_import.sh](scripts/Oyediran_Taiwo_301921478_P4_02_import.sh) | Runs the export, loads both collections with `mongoimport`, compares counts |
+| [scripts/Oyediran_Taiwo_301921478_P4_03_count_postgres.sql](scripts/Oyediran_Taiwo_301921478_P4_03_count_postgres.sql), [scripts/Oyediran_Taiwo_301921478_P4_03_count_mongodb.js](scripts/Oyediran_Taiwo_301921478_P4_03_count_mongodb.js) | The two sides of the count check |
+| [scripts/Oyediran_Taiwo_301921478_P4_04_schema_validation.js](scripts/Oyediran_Taiwo_301921478_P4_04_schema_validation.js) | `$jsonSchema` validator and 7 test inserts |
+| [scripts/Oyediran_Taiwo_301921478_P4_05_queries.js](scripts/Oyediran_Taiwo_301921478_P4_05_queries.js) | Portfolio 2 queries rewritten for MongoDB |
+| [scripts/Oyediran_Taiwo_301921478_P4_06_indexes_explain.js](scripts/Oyediran_Taiwo_301921478_P4_06_indexes_explain.js) | `explain('executionStats')` before and after 5 indexes |
+| [scripts/Oyediran_Taiwo_301921478_P4_07_updates.js](scripts/Oyediran_Taiwo_301921478_P4_07_updates.js) | Atomic booking and payment, transactions, cost of duplicated data |
 
-The exported JSON files (about 70 MB) are written to `data/`, which is not committed because `02_import.sh` recreates them.
+The exported JSON files (about 70 MB) are written to `data/`, which is not committed because `Oyediran_Taiwo_301921478_P4_02_import.sh` recreates them.
 
 ## 1. Why a Document Model, and for Which Data
 
@@ -114,7 +114,7 @@ The last test shows the limit of `$jsonSchema`: it checks that one document has 
 - **M1 before = 118 documents.** The query has `.limit(1)`, so the collection scan stops at the first match. The scan reads documents in the order they are stored. The export file is in `_id` order, but `mongoimport` inserts in parallel batches, so the storage order is close to, but not exactly, `_id` order, and CB-000123 (`_id` 123) was reached after 118 documents. That number is luck; a patient near the end of the collection would have needed nearly all 5,000. The unique index makes it 1 key and 1 document for any patient.
 - **M2 collation.** The query uses a case-insensitive collation (strength 2, so "okafor" = "Okafor"). An index stores keys compared in a particular way, and MongoDB can only use it if the index was created with the same collation as the query. A normal index on `last_name` would be ignored. This is the same idea as the `lower()` expression index in Portfolio 2: the index has to be built on the same thing the query compares.
 - **Multikey indexes.** When an indexed field is inside an array, MongoDB creates one index key for every array element, so a patient with several HbA1c results has several keys pointing to the same document. That is why M6 examined 1,282 keys (one per HbA1c result above 6.5) but only 1,132 documents (one per patient, after duplicates are removed).
-- **Why M6 is still about 100 ms.** The index finds the right patients, but it still has to fetch and return 1,132 whole documents of about 11 KB each, roughly 12 MB, because this test query has no projection. With a projection of only the name fields (as in `05_queries.js`, which runs before the indexes exist), the query took 15 ms even without an index. Much of the cost is reading and sending the large embedded documents, not finding them.
+- **Why M6 is still about 100 ms.** The index finds the right patients, but it still has to fetch and return 1,132 whole documents of about 11 KB each, roughly 12 MB, because this test query has no projection. With a projection of only the name fields (as in `Oyediran_Taiwo_301921478_P4_05_queries.js`, which runs before the indexes exist), the query took 15 ms even without an index. Much of the cost is reading and sending the large embedded documents, not finding them.
 - **M4 and M5.** Both have to `$unwind` the visits of every patient before they can filter or group, because the conditions are on embedded bills or visits and the result is one row per visit, not per patient. M4 took 41 ms against 0.047 ms for Q3b in PostgreSQL, which used a partial index on `bills` and read just 20 rows. M5 took 49 ms against about 13 ms for Q6. Embedding is ideal for one patient, but it makes reports across all patients slower, because the data is grouped the wrong way for them. The MongoDB times include returning results to mongosh, while the PostgreSQL times are server execution only from `EXPLAIN ANALYZE`, so the gap is somewhat overstated, but the pattern is the same.
 
 ## 6. Writes, Atomicity and Duplication
@@ -144,37 +144,37 @@ My recommendation: PostgreSQL stays the system of record for CareBridge. All wri
 
 ```bash
 cd portfolio-4-nosql/scripts
-./02_import.sh
-mongosh --quiet carebridge 04_schema_validation.js
-mongosh --quiet carebridge 05_queries.js
-mongosh --quiet carebridge 06_indexes_explain.js
-mongosh --quiet carebridge 07_updates.js
+./Oyediran_Taiwo_301921478_P4_02_import.sh
+mongosh --quiet carebridge Oyediran_Taiwo_301921478_P4_04_schema_validation.js
+mongosh --quiet carebridge Oyediran_Taiwo_301921478_P4_05_queries.js
+mongosh --quiet carebridge Oyediran_Taiwo_301921478_P4_06_indexes_explain.js
+mongosh --quiet carebridge Oyediran_Taiwo_301921478_P4_07_updates.js
 ```
 
-`02_import.sh` drops and reloads both collections, which also removes the validator and indexes, so run the scripts in this order.
+`Oyediran_Taiwo_301921478_P4_02_import.sh` drops and reloads both collections, which also removes the validator and indexes, so run the scripts in this order.
 
 ## 9. Evidence
 
-![Migration counts](screenshots/01-migration-counts.png)
+![Migration counts](screenshots/Oyediran_Taiwo_301921478_P4_01-migration-counts.png)
 
 *The export and import ran, and every PostgreSQL row count and the ₦1,034,296,105.00 total billed match MongoDB exactly. Patient documents average 11.0 KB, with the largest at 26.3 KB.*
 
-![Schema validation](screenshots/02-schema-validation.png)
+![Schema validation](screenshots/Oyediran_Taiwo_301921478_P4_02-schema-validation.png)
 
 *The validator found 0 stored documents breaking the rules and rejected 5 invalid inserts with the reason, but accepted a visit for a doctor who does not exist.*
 
-![Queries M1–M4](screenshots/03-queries-m1-m4.png)
+![Queries M1–M4](screenshots/Oyediran_Taiwo_301921478_P4_03-queries-m1-m4.png)
 
 *M1–M4 return the same results as the Portfolio 2 queries: CB-000123's history in one document, the two Chinedu Okafors, Dr Abubakar's 4 appointments, and the oldest outstanding Lekki bills.*
 
-![Queries M4–M6](screenshots/04-queries-m4-m6.png)
+![Queries M4–M6](screenshots/Oyediran_Taiwo_301921478_P4_04-queries-m4-m6.png)
 
 *M5 groups the same 13,804 diagnoses into 35 department/diagnosis pairs as Q6, and M6 finds 1,132 patients with HbA1c above 6.5 using a numeric comparison.*
 
-![Indexes and explain](screenshots/05-indexes-explain.png)
+![Indexes and explain](screenshots/Oyediran_Taiwo_301921478_P4_05-indexes-explain.png)
 
 *Before indexing every query was a COLLSCAN. After indexing each one uses its index (IXSCAN), and M6's multikey index examines 1,282 keys for 1,132 documents.*
 
-![Updates and atomicity](screenshots/06-updates-atomicity.png)
+![Updates and atomicity](screenshots/Oyediran_Taiwo_301921478_P4_06-updates-atomicity.png)
 
 *The atomic booking rejected the overlapping slot, the multi-document transaction was refused on a standalone server, the payment updated one embedded bill atomically, and the doctor's name change touched 2,548 documents.*
