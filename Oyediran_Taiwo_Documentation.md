@@ -40,7 +40,7 @@ A PostgreSQL streaming replica refused writes and returned a stale read while re
 <figure><img src="portfolio-5-distributed-cloud/screenshots/Oyediran_Taiwo_301921478_P5_10-query-routing.png"><figcaption>Fig. 6 Targeted vs scatter-gather routing (P5)</figcaption></figure>
 </div>
 
-All scripts, full outputs, execution plans and further screenshots are in each portfolio folder of the repository. The repository was built up in 22 commits.
+All scripts, full outputs, execution plans and further screenshots are in each portfolio folder of the repository. The repository was built up through progressive commits from 12 to 15 November 2026.
 
 ## 3. Individual Technical Reflection
 
